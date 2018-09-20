@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--自动扫描包,扫描注解-->
+    <context:component-scan base-package="com.afeng"></context:component-scan>
+    <!--加载配置文件,此处为数据库连接信息-->
+    <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
+
+    <!--配置数据源,此处用druid连接池-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+        <property name="initialSize" value="3"></property>
+        <property name="minIdle" value="3"></property>
+        <property name="maxActive" value="15"></property>
+    </bean>
+
+
+    <!--配置MyBatis的SqlSession工厂-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:sqlMapConfig.xml"></property>
+        <property name="mapperLocations" value="classpath*:com/afeng/mapper/*.xml"></property>
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+
+    <!--设置Mapper的扫描包-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.afeng.mapper"></property>
+    </bean>
+
+
+
+
+</beans>
